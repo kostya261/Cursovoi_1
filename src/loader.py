@@ -1,11 +1,10 @@
 import json
 from pathlib import Path
-from typing import Dict
 
 import pandas as pd
 
 
-def excel_loader(file_path: str = "") -> list[Dict]:
+def excel_loader(file_path: str = "") -> pd.DataFrame:
     """
     Функция читает файл формата xlsx и возвращает список со словарями
 
@@ -13,7 +12,7 @@ def excel_loader(file_path: str = "") -> list[Dict]:
     :return: - Список словарей с данными.
     """
     try:
-        result = pd.read_excel(file_path).to_dict(orient="records")
+        result = pd.read_excel(file_path)#.to_dict(orient="records")
         return result
     except FileNotFoundError:
         raise ValueError("Ошибка!")

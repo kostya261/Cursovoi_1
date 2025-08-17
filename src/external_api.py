@@ -55,7 +55,13 @@ def get_stock_price(tickers: list) -> list[dict]:
     return temp
 
 
-def curency_rates(currencys: list):
+def currency_rates(currencys: list):
+    """
+    Данная функция принимает на вход список валют и поочереди получает по ним данные
+    через API
+    :param currencys: - список валют
+    :return: - список с результатами полученными через API
+    """
     result: list[dict] = []
     temp: dict = {}
     for item in currencys:
