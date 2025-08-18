@@ -1,16 +1,14 @@
-import re
 import logging
+import re
+from datetime import datetime  # , timedelta
 from pathlib import Path
 
 import pandas as pd
-
-from datetime import datetime  # , timedelta
-
 from dateutil.relativedelta import relativedelta
 
 from config import logs_utils_file
 
-#описание логера
+# описание логера
 logger = logging.getLogger(__name__)
 
 log_dir = Path(__file__).parent.parent
@@ -51,15 +49,16 @@ def convert_data(data_frame: pd.DataFrame, date: str):
         - Отфильтрованный DataFrame
     """
     if data_frame.empty:
+        logger.error(f"\nИмя файла: {__name__}, имя функции convert_data - Передан пустой DataFrame")
         raise ValueError("Передан пустой DataFrame")
     try:
         df = pd.DataFrame(data_frame)
-    # Конвертация дат
+        # Конвертация дат
         df["Дата операции"] = pd.to_datetime(df["Дата операции"], format="%d.%m.%Y %H:%M:%S")
         end_date = pd.to_datetime(date, format="%d-%m-%Y %H:%M:%S")
-        first_day = end_date.replace(day=1)  # Первый день месяца
+        first_day = end_date.replace(day=1, hour=0, minute=0, second=0)
         logger.info(f"\nИмя файла: {__name__}, имя функции convert_data - Ок")
-        return df[(df["Дата операции"] > first_day) & (df["Дата операции"] < end_date)]
+        return df[(df["Дата операции"] >= first_day) & (df["Дата операции"] < end_date)]
     except Exception as e:
         logger.error(f"\nИмя файла: {__name__}, имя функции convert_data - Ошибка в формате даты: {e}")
         raise ValueError(f"Ошибка в формате даты: {e}")
@@ -82,6 +81,7 @@ def filter_by_date(data_frame: pd.DataFrame, start_date: str = None, end_date: s
     - Отфильтрованный DataFrame
     """
     if data_frame.empty:
+        logger.error(f"\nИмя файла: {__name__}, имя функции filter_by_date - Передан пустой DataFrame")
         raise ValueError("Передан пустой DataFrame")
 
     try:
@@ -89,7 +89,7 @@ def filter_by_date(data_frame: pd.DataFrame, start_date: str = None, end_date: s
         df = data_frame.copy()
 
         # Конвертируем колонку с датами (с автоматическим определением формата)
-        df["Дата операции"] = pd.to_datetime(df["Дата операции"], dayfirst=True)
+        df["Дата операции"] = pd.to_datetime(df["Дата операции"], dayfirst=True, format="mixed")
 
         # Функция для конвертации входных дат
         def parse_date(date_str):
@@ -98,15 +98,12 @@ def filter_by_date(data_frame: pd.DataFrame, start_date: str = None, end_date: s
             try:
                 logger.info(f"\nИмя файла: {__name__}, имя функции filter_by_date - Ок")
                 return pd.to_datetime(date_str, dayfirst=True)
-            except:
-                logger.info(f"\nИмя файла: {__name__}, имя функции filter_by_date - Ок")
+            except Exception as e:
+                logger.info(f"\nИмя файла: {__name__}, имя функции filter_by_date - {e}")
                 return pd.to_datetime(date_str)
 
         # Обрабатываем start_date
-        if start_date is None:
-            start_date = datetime.now()
-        else:
-            start_date = parse_date(start_date)
+        start_date = parse_date(start_date) if start_date else df["Дата операции"].min()
 
         # Обрабатываем end_date
         if end_date is None:
@@ -126,6 +123,13 @@ def filter_by_date(data_frame: pd.DataFrame, start_date: str = None, end_date: s
 
 # Возвращает строки с картами по указанный период начиная с 1-го числа месяца.
 def get_card_from_period(data_frame: pd.DataFrame):
+    """
+    На самом деле период указывается в любой другой функции которая фильтрует DataFrame по дате
+    здесь же только вывод карт.
+    """
+    if data_frame.empty:
+        logger.error(f"\nИмя файла: {__name__}, имя функции get_card_from_period - Передан пустой DataFrame")
+        raise ValueError("Передан пустой DataFrame")
 
     total_spent = data_frame.groupby("Номер карты")["Сумма операции с округлением"].sum().reset_index()
     num_card = list(total_spent["Номер карты"])
@@ -192,6 +196,4 @@ def extract_name_parts(text: str):
         (?![а-яёa-z])               # Не должно быть строчных после инициала
     """
     logger.info(f"\nИмя файла: {__name__}, имя функции extract_name_parts - Ок")
-    return re.findall(pattern, str(text), flags=re.X | re.IGNORECASE)
-
-
+    return re.findall(pattern, str(text), flags=re.X)

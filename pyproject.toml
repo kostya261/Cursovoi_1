@@ -19,7 +19,7 @@ pytest = "^8.4.1"
 flake8 = "==7.3.0"
 mypy = "==1.17.1"
 numpy = "==2.3.2"
-coverage = "==7.10.3"
+coverage = "==7.10.4"
 certifi = "==2025.8.3"
 click = "==8.2.2"
 urllib3 = "==2.5.0"
@@ -33,6 +33,7 @@ types-pytz = "==2025.2.0.20250809"
 requests = "^2.32.3"
 pytest = "^8.3.5"
 pytest-cov = "^6.1.1"
+pytest-mock = "^3.14.1"
 
 
 [tool.poetry.group.lint.dependencies]

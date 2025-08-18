@@ -1,11 +1,9 @@
 import json
 
 from config import file_path, user_settings_file
-
-from src.external_api import get_stock_price, currency_rates
-from src.loader import load_json, excel_loader
-
-from src.utils import get_time_based_greeting, get_card_from_period, get_top_transactions, convert_data
+from src.external_api import currency_rates, get_stock_price
+from src.loader import excel_loader, load_json
+from src.utils import convert_data, get_card_from_period, get_time_based_greeting, get_top_transactions
 
 
 def main_page(date_time: str):
@@ -25,7 +23,7 @@ def main_page(date_time: str):
         print("Ошибка: user_stocks должен быть списком")
         user_stocks = []
 
-    #Собираем всё в один словарь
+    # Собираем всё в один словарь
     hello: str = get_time_based_greeting()
     result["greeting"] = hello
     result["cards"] = get_card_from_period(data)
@@ -33,7 +31,8 @@ def main_page(date_time: str):
     result["currency_rates"] = currency_rates(user_currencies)
     result["stock_prices"] = get_stock_price(user_stocks)
 
-    return json.dumps(result, ensure_ascii=False, indent = 2)
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
 
 if __name__ == "__main__":
     print(main_page("25-11-2020 12:50:00"))

@@ -1,14 +1,11 @@
 import logging
 from pathlib import Path
 
-import pandas as pd
-
 from config import logs_services_file
 from src.loader import excel_loader
-from src.utils import extract_phones, extract_name_parts, convert_data
+from src.utils import convert_data, extract_name_parts, extract_phones
 
-
-#описание логера
+# описание логера
 logger = logging.getLogger(__name__)
 
 log_dir = Path(__file__).parent.parent
@@ -21,8 +18,13 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
 
 
-
 def search_phone(data_frame):
+    """
+    Поиск всех номеров телефонов
+
+    :param data_frame:
+    :return: - json data
+    """
     # Проверка данных
     if data_frame.empty:
         logger.error(f"\nИмя файла: {__name__}, имя функции search_phone - Передан пустой DataFrame")
@@ -34,6 +36,12 @@ def search_phone(data_frame):
 
 
 def search_name(data_frame):
+    """
+    Поиск всех имён
+
+    :param data_frame:
+    :return: - json data
+    """
     # Проверка данных
     if data_frame.empty:
         logger.error(f"\nИмя файла: {__name__}, имя функции search_name - Передан пустой DataFrame")
@@ -45,6 +53,13 @@ def search_name(data_frame):
 
 
 def search_line(data_frame, search_str):
+    """
+    Поиск по указанному слову
+
+    :param data_frame:
+    :param search_str: - Строка для поиска
+    :return: - json data
+    """
     # Проверка данных
     if data_frame.empty:
         logger.error(f"\nИмя файла: {__name__}, имя функции search_line - Передан пустой DataFrame")
@@ -60,9 +75,9 @@ def search_line(data_frame, search_str):
 
 if __name__ == "__main__":
     excel_file = excel_loader("..\\data\\operations.xlsx")
-    data = convert_data(excel_file, "25-11-2020 12:50:00")
-    print(search_line(data, "Магнит"))
-    print(search_line(pd.DataFrame(excel_file), "Супермаркеты"))
+    data = convert_data(excel_file, "25-11-2021 12:50:00")
+    #  print(search_line(data, "Магнит"))
+    #  print(search_line(pd.DataFrame(excel_file), "Супермаркеты"))
     print()
     print(search_phone(data))
     print()
