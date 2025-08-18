@@ -76,8 +76,8 @@ def search_line(data_frame, search_str):
 if __name__ == "__main__":
     excel_file = excel_loader("..\\data\\operations.xlsx")
     data = convert_data(excel_file, "25-11-2021 12:50:00")
-    #  print(search_line(data, "Магнит"))
-    #  print(search_line(pd.DataFrame(excel_file), "Супермаркеты"))
+    print(search_line(data, "Магнит"))
+    print(search_line(pd.DataFrame(excel_file), "Супермаркеты"))
     print()
     print(search_phone(data))
     print()

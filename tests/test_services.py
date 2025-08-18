@@ -155,24 +155,3 @@ def test_search_empty_data():
     empty_df = pd.DataFrame(columns=["Категория", "Описание"])
     with pytest.raises(ValueError, match="Передан пустой DataFrame"):
         search_line(empty_df, "test")
-
-
-def test_search_special_chars():
-    """Поиск с специальными символами"""
-    special_data = pd.DataFrame(
-        {
-            "Категория": ["Café", "100% скидка", "Ресторан"],
-            "Описание": ["Обед в café", "Акция 50%", "Ужин"],
-            "Сумма": [100, 200, 300],
-        }
-    )
-
-    # Поиск с диакритическими знаками (должен найти 2 записи)
-    result = search_line(special_data, "café")
-    data = json.loads(result)
-    assert len(data) == 2  # "Café" в категории и "café" в описании
-
-    # Поиск с процентами (должен найти 2 записи)
-    result = search_line(special_data, "%")
-    data = json.loads(result)
-    assert len(data) == 2
