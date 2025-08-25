@@ -75,7 +75,10 @@ def test_filter_invalid_dates(sample_data_3):
 
 
 def test_default_date_range(sample_data_3):
+    """Тестируем фильтр по дате"""
     result = filter_by_date(sample_data_3)
+    #print(result)
+    #Если результат > 0
     assert len(result) > 0
 
 

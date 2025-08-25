@@ -1,4 +1,5 @@
 import logging
+import pandas as pd
 from pathlib import Path
 
 from config import logs_services_file
@@ -18,7 +19,7 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
 
 
-def search_phone(data_frame):
+def search_phone(data_frame: pd.DataFrame) -> str:
     """
     Поиск всех номеров телефонов
 
@@ -35,7 +36,7 @@ def search_phone(data_frame):
     return result.to_json(orient="records", force_ascii=False, indent=2)
 
 
-def search_name(data_frame):
+def search_name(data_frame: pd.DataFrame) -> str:
     """
     Поиск всех имён
 
@@ -52,9 +53,9 @@ def search_name(data_frame):
     return result.to_json(orient="records", force_ascii=False, indent=2)
 
 
-def search_line(data_frame, search_str):
+def search_line(data_frame: pd.DataFrame, search_str: str) -> str:
     """
-    Поиск по указанному слову
+    Поиск по указанному слову в Категории и Описании
 
     :param data_frame:
     :param search_str: - Строка для поиска

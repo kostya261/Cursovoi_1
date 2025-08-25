@@ -21,7 +21,7 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
 
 
-# Приветствие в зависимости от времени суток
+
 def get_time_based_greeting() -> str:
     """Возвращает приветствие в зависимости от времени суток."""
     current_hour = datetime.now().hour
@@ -38,7 +38,7 @@ def get_time_based_greeting() -> str:
     return greeting
 
 
-def convert_data(data_frame: pd.DataFrame, date: str):
+def convert_data(data_frame: pd.DataFrame, date: str) -> pd.DataFrame:
     """
     Фильтрует DataFrame c первого числа месяца по указанную дату.
 
@@ -64,7 +64,7 @@ def convert_data(data_frame: pd.DataFrame, date: str):
         raise ValueError(f"Ошибка в формате даты: {e}")
 
 
-def filter_by_date(data_frame: pd.DataFrame, start_date: str = None, end_date: str = None):
+def filter_by_date(data_frame: pd.DataFrame, start_date: str = None, end_date: str = None) -> pd.DataFrame:
     """
     Фильтрует DataFrame по диапазону дат.
 
@@ -121,9 +121,11 @@ def filter_by_date(data_frame: pd.DataFrame, start_date: str = None, end_date: s
         raise ValueError(f"Ошибка фильтрации по дате: {str(e)}")
 
 
-# Возвращает строки с картами по указанный период начиная с 1-го числа месяца.
-def get_card_from_period(data_frame: pd.DataFrame):
+
+def get_card_from_period(data_frame: pd.DataFrame) -> list:
     """
+    Возвращает строки с картами по указанный период начиная с 1-го числа месяца.
+
     На самом деле период указывается в любой другой функции которая фильтрует DataFrame по дате
     здесь же только вывод карт.
     """
@@ -151,9 +153,14 @@ def get_card_from_period(data_frame: pd.DataFrame):
     return result
 
 
-# Возвращает ТОП 10 транзакций
-def get_top_transactions(data_frame: pd.DataFrame):
 
+def get_top_transactions(data_frame: pd.DataFrame) -> list:
+    """
+    Возвращает ТОП 10 транзакций
+
+    :param data_frame:
+    :return:
+    """
     top_categories = data_frame["Категория"].value_counts().head(10).to_dict()
 
     result: list = []
@@ -178,15 +185,25 @@ def get_top_transactions(data_frame: pd.DataFrame):
     return res
 
 
-# Функция для извлечения номеров
-def extract_phones(text: str):
+
+def extract_phones(text: str) -> str:
+    """
+    Функция для извлечения номеров
+    :param text:
+    :return:
+    """
     pattern = r"(?:\+7|8|7)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}"
     logger.info(f"\nИмя файла: {__name__}, имя функции extract_phones - Ок")
     return re.findall(pattern, str(text))
 
 
-# Функция для извлечения Имён
-def extract_name_parts(text: str):
+
+def extract_name_parts(text: str) -> str:
+    """
+    Функция для извлечения Имён
+    :param text:
+    :return:
+    """
     pattern = r"""
         \b                          # Граница слова
         [А-ЯЁA-Z][а-яёa-z]+         # Имя (с заглавной, затем строчные)

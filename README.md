@@ -15,67 +15,54 @@ version = "0.1.0"
 description = ""
 authors = ["Konstantin Kosarew <kos26193@gmail.com>"]
 readme = "README.md"
+package-mode = false  # ← ЭТО ВАЖНО!
 
 [tool.poetry.dependencies]
 python = "^3.13"
-poetry-core = "^2.1.3"
-shell = "^1.0.1"
-python-dotenv = "^1.1.1"
-pandas = "^2.3.1"
+pandas = "==2.3.2"
 openpyxl = "==3.2.0b1"
-pandas-stubs = "^2.3.0.250703"
-requests = "^2.32.4"
-typing-extensions = "^4.14.1"
-pytest = "^8.4.1"
-flake8 = "==7.3.0"
-mypy = "==1.17.1"
-numpy = "==2.3.2"
-coverage = "==7.10.4"
-certifi = "==2025.8.3"
-click = "==8.2.2"
-urllib3 = "==2.5.0"
-pytest-cov = "==6.2.1"
+requests = "==2.32.5"
 finnhub-python = "==2.4.24"
+python-dotenv = "^1.1.1"
+click = "==8.2.2"
+certifi = "==2025.8.3"
+urllib3 = "==2.5.0"
 charset-normalizer = "==3.4.3"
+numpy = "==2.3.2"
+typing-extensions = "==4.15.0rc1"
+pandas-stubs = "^2.3.0.250703"
 types-pytz = "==2025.2.0.20250809"
 
-
 [tool.poetry.group.dev.dependencies]
-requests = "^2.32.3"
-pytest = "^8.3.5"
-pytest-cov = "^6.1.1"
-pytest-mock = "^3.14.1"
+poetry-core = "^2.1.3"
+shell = "^1.0.1"
 
+[tool.poetry.group.test.dependencies]
+pytest = "^8.4.1"
+pytest-cov = "==6.2.1"
 
 [tool.poetry.group.lint.dependencies]
-flake8 = "^7.2.0"
-mypy = "^1.15.0"
+flake8 = "==7.3.0"
+mypy = "==1.17.1"
 black = "^25.1.0"
 isort = "^6.0.1"
-
+coverage = "==7.10.5"
 
 [tool.black]
-# Максимальная длина строки
 line-length = 119
-# Файлы, которые не нужно форматировать
 exclude = """ \\.git """
 
-
 [tool.isort]
-# максимальная длина строки
 line_length = 119
-
 
 [tool.mypy]
 disallow_untyped_defs = true
 warn_return_any = true
 exclude = 'venv'
 
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
 
 ```
 

@@ -39,7 +39,13 @@ def excel_loader(file_path: str = "") -> pd.DataFrame:
 
 
 def load_json(file_path: str = "", debug: bool = False) -> dict:
+    """
+    Функция читает файл формата json. Как результат возвращает словарь.
 
+    :param file_path: - путь к файлу и имя файла.
+    :param debug: - если True - выводит информацию в консоль (отладочную)
+    :return:
+    """
     path = Path(file_path)
     # Проверка существования файла
     if not path.is_file():

@@ -6,7 +6,17 @@ from src.loader import excel_loader, load_json
 from src.utils import convert_data, get_card_from_period, get_time_based_greeting, get_top_transactions
 
 
-def main_page(date_time: str):
+def main_page(date_time: str) -> str:
+    """
+    Данная функция читает файлы user_settings.json и operations.xlsx
+    выводит отсортированные результаты по различным транзакциям отсортированным
+    по именам, телефонным номерам и категориям за указанный в date_time промежуток времени.
+    так же выясняются курсы валют указанные в user_settings.json и информация по акциям,
+    которые так же перечисленны в данном файле.
+    :param date_time: - вдата, до которой выводится информация начиная с первого числа
+                        указанного месяца
+    :return:
+    """
     result: dict = {}
 
     excel_file = excel_loader(file_path)
