@@ -1,99 +1,85 @@
+import logging
 import pandas as pd
+from pathlib import Path
 
+from config import logs_services_file
 from src.loader import excel_loader
-from src.utils import extract_phones, extract_name_parts
+from src.utils import convert_data, extract_name_parts, extract_phones
+
+# описание логера
+logger = logging.getLogger(__name__)
+
+log_dir = Path(__file__).parent.parent
+log_dir.mkdir(exist_ok=True)
+
+file_handler = logging.FileHandler(logs_services_file, "w+", encoding="utf-8")
+file_formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.DEBUG)
 
 
-def search_phone(data, date):
+def search_phone(data_frame: pd.DataFrame) -> str:
+    """
+    Поиск всех номеров телефонов
 
-    df = pd.DataFrame(data)
-
-    # Конвертация дат
-    try:
-        df["Дата операции"] = pd.to_datetime(df["Дата операции"], format="%d.%m.%Y %H:%M:%S")
-        end_date = pd.to_datetime(date, format="%d-%m-%Y %H:%M:%S")
-        first_day = end_date.replace(day=1)  # Первый день месяца
-    except Exception as e:
-        raise ValueError(f"Ошибка в формате даты: {e}")
-
-    data_frame = df[(df["Дата операции"] > first_day) & (df["Дата операции"] < end_date)]
-
-    #phones_mask = data_frame["Описание"].str.contains(phone_pattern, regex=True, na=False)
-    has_phone = data_frame["Описание"].apply(
-        lambda x: len(extract_phones(x)) > 0
-    )
+    :param data_frame:
+    :return: - json data
+    """
+    # Проверка данных
+    if data_frame.empty:
+        logger.error(f"\nИмя файла: {__name__}, имя функции search_phone - Передан пустой DataFrame")
+        raise ValueError("Передан пустой DataFrame")
+    has_phone = data_frame["Описание"].apply(lambda x: len(extract_phones(x)) > 0)
     result = data_frame[has_phone]
-
-    #print(data_frame)
-    return result.to_json(orient='records', force_ascii=False, indent=2)
-
+    logger.info(f"\nИмя файла: {__name__}, имя функции search_phone - Ок")
+    return result.to_json(orient="records", force_ascii=False, indent=2)
 
 
+def search_name(data_frame: pd.DataFrame) -> str:
+    """
+    Поиск всех имён
 
-def search_name(data, date):
-    name_pattern = r'\b[А-ЯЁ][а-яё]+ [А-ЯЁ]\.\b'
-
-    df = pd.DataFrame(data)
-
-    # Конвертация дат
-    try:
-        df["Дата операции"] = pd.to_datetime(df["Дата операции"], format="%d.%m.%Y %H:%M:%S")
-        end_date = pd.to_datetime(date, format="%d-%m-%Y %H:%M:%S")
-        first_day = end_date.replace(day=1)  # Первый день месяца
-    except Exception as e:
-        raise ValueError(f"Ошибка в формате даты: {e}")
-
-    data_frame = df[(df["Дата операции"] > first_day) & (df["Дата операции"] < end_date)]
-
-    has_name = data_frame["Описание"].apply(
-        lambda x: len(extract_name_parts(x)) > 0
-    )
+    :param data_frame:
+    :return: - json data
+    """
+    # Проверка данных
+    if data_frame.empty:
+        logger.error(f"\nИмя файла: {__name__}, имя функции search_name - Передан пустой DataFrame")
+        raise ValueError("Передан пустой DataFrame")
+    has_name = data_frame["Описание"].apply(lambda x: len(extract_name_parts(x)) > 0)
     result = data_frame[has_name]
-
-    #print(data_frame)
-    return result.to_json(orient='records', force_ascii=False, indent=2)
-
+    logger.info(f"\nИмя файла: {__name__}, имя функции search_name - Ок")
+    return result.to_json(orient="records", force_ascii=False, indent=2)
 
 
-def search_line(data, date: str, search_str):
-    df = pd.DataFrame(data)
+def search_line(data_frame: pd.DataFrame, search_str: str) -> str:
+    """
+    Поиск по указанному слову в Категории и Описании
 
-    # Конвертация дат
-    try:
-        df["Дата операции"] = pd.to_datetime(df["Дата операции"], format="%d.%m.%Y %H:%M:%S")
-        end_date = pd.to_datetime(date, format="%d-%m-%Y %H:%M:%S")
-        first_day = end_date.replace(day=1)  # Первый день месяца
-    except Exception as e:
-        raise ValueError(f"Ошибка в формате даты: {e}")
-
-    data_frame = df[(df["Дата операции"] > first_day) & (df["Дата операции"] < end_date)]
-
-    # Поиск в указанных столбцах
+    :param data_frame:
+    :param search_str: - Строка для поиска
+    :return: - json data
+    """
+    # Проверка данных
+    if data_frame.empty:
+        logger.error(f"\nИмя файла: {__name__}, имя функции search_line - Передан пустой DataFrame")
+        raise ValueError("Передан пустой DataFrame")
+    # Поиск в cтолбцах Категория и Описание
     result = data_frame[
-        data_frame['Категория'].str.contains(search_str, case=False, na=False) |
-        data_frame['Описание'].str.contains(search_str, case=False, na=False)
-        ]
-    return result.to_json(orient='records', force_ascii=False, indent=2)
-
-
-def convert_data(data, date):
-    df = pd.DataFrame(data)
-    # Конвертация дат
-    try:
-        df["Дата операции"] = pd.to_datetime(df["Дата операции"], format="%d.%m.%Y %H:%M:%S")
-        end_date = pd.to_datetime(date, format="%d-%m-%Y %H:%M:%S")
-        first_day = end_date.replace(day=1)  # Первый день месяца
-        #return first_day, end_date
-        return df[(df["Дата операции"] > first_day) & (df["Дата операции"] < end_date)]
-    except Exception as e:
-        raise ValueError(f"Ошибка в формате даты: {e}")
+        data_frame["Категория"].str.contains(search_str, case=False, na=False)
+        | data_frame["Описание"].str.contains(search_str, case=False, na=False)
+    ]
+    logger.info(f"\nИмя файла: {__name__}, имя функции search_line - Ок")
+    return result.to_json(orient="records", force_ascii=False, indent=2)
 
 
 if __name__ == "__main__":
     excel_file = excel_loader("..\\data\\operations.xlsx")
-    #print(search_line(excel_file, "25-11-2020 12:50:00", "Магнит"))
+    data = convert_data(excel_file, "25-11-2021 12:50:00")
+    print(search_line(data, "Магнит"))
+    print(search_line(pd.DataFrame(excel_file), "Супермаркеты"))
     print()
-    #print(search_phone(excel_file, "25-11-2021 12:50:0"))
+    print(search_phone(data))
     print()
-    #print(search_name(excel_file, "15-11-2021 12:50:0"))
-    print(convert_data(excel_file, "25-11-2020 12:50:00"))
+    print(search_name(data))

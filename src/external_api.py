@@ -34,7 +34,8 @@ def currency_rate(currency: str = "USD") -> float | Any:
 
 
 def get_stock_price(tickers: list) -> list[dict]:
-    """Возвращает текущую цену акций по тикеру.
+    """
+    Возвращает текущую цену акций по тикеру.
     :params tickers: - Список фирм, по которым нужно получить актуальную цену акции
     :return: - возвращает словарь с ключом в виде наименования фирмы и значение цена акции
     """
@@ -55,7 +56,13 @@ def get_stock_price(tickers: list) -> list[dict]:
     return temp
 
 
-def curency_rates(currencys: list):
+def currency_rates(currencys: list) -> list:
+    """
+    Данная функция принимает на вход список валют и поочереди получает по ним данные
+    через API
+    :param currencys: - список валют
+    :return: - список с результатами полученными через API
+    """
     result: list[dict] = []
     temp: dict = {}
     for item in currencys:
